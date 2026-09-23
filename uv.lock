@@ -29,6 +29,7 @@ name = "career-agent"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "httpx" },
     { name = "langchain-openai" },
     { name = "langgraph" },
     { name = "openai" },
@@ -42,6 +43,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "langchain-openai", specifier = ">=1.6.4" },
     { name = "langgraph" },
     { name = "openai" },
