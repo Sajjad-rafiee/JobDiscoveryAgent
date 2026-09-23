@@ -1,11 +1,13 @@
-from langgraph.graph import END, START, StateGraph
+from langgraph.graph import START, StateGraph
+from langgraph.prebuilt import ToolNode, tools_condition
 
-from agent.model import get_chat_model
+from agent.model import get_tool_enabled_chat_model
 from agent.state import AgentState
+from tools.job_search import search_jobs
 
 
 def chat(state: AgentState) -> dict:
-    model = get_chat_model()
+    model = get_tool_enabled_chat_model()
     response = model.invoke(state["messages"])
     return {"messages": [response]}
 
@@ -13,8 +15,10 @@ def chat(state: AgentState) -> dict:
 def build_graph():
     builder = StateGraph(AgentState)
     builder.add_node("chat", chat)
+    builder.add_node("tools", ToolNode([search_jobs]))
     builder.add_edge(START, "chat")
-    builder.add_edge("chat", END)
+    builder.add_conditional_edges("chat", tools_condition)
+    builder.add_edge("tools", "chat")
     return builder.compile()
 
 
