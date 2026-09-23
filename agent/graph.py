@@ -1,10 +1,13 @@
 from langgraph.graph import END, START, StateGraph
 
+from agent.model import get_chat_model
 from agent.state import AgentState
 
 
 def chat(state: AgentState) -> dict:
-    return {}
+    model = get_chat_model()
+    response = model.invoke(state["messages"])
+    return {"messages": [response]}
 
 
 def build_graph():

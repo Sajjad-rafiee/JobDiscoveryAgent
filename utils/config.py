@@ -12,6 +12,7 @@ class ConfigError(RuntimeError):
 class Settings:
     career_api_base_url: str
     openai_api_key: str
+    openai_model: str
 
 
 def _require(name: str) -> str:
@@ -26,4 +27,5 @@ def load_settings() -> Settings:
     return Settings(
         career_api_base_url=_require("CAREER_API_BASE_URL"),
         openai_api_key=_require("OPENAI_API_KEY"),
+        openai_model=_require("OPENAI_MODEL"),
     )
