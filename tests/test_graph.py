@@ -2,6 +2,9 @@ from langchain_core.messages import AIMessage, ToolMessage
 
 from agent import graph as graph_module
 from agent.graph import graph
+from api.client import CareerAPIError
+from tools import job_search as job_search_module
+from tools.job_search import SEARCH_FAILED_MESSAGE
 
 
 class PlainAnswerModel:
@@ -27,6 +30,20 @@ class ToolCallThenAnswerModel:
                 ],
             )
         return AIMessage(content="Here are some AI Engineer jobs in Berlin.")
+
+
+class FailingSearchClient:
+    def search_jobs(self, query, location=None):
+        raise CareerAPIError("Career API request failed with status 503")
+
+    def close(self):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc_info):
+        self.close()
 
 
 def _invoke_graph(monkeypatch, model):
@@ -66,4 +83,21 @@ def test_complete_tool_loop_produces_final_answer(monkeypatch):
     kinds = [type(m).__name__ for m in messages]
 
     assert kinds == ["HumanMessage", "AIMessage", "ToolMessage", "AIMessage"]
+    assert messages[-1].content == "Here are some AI Engineer jobs in Berlin."
+
+
+def test_career_api_failure_becomes_tool_error_and_graph_continues(monkeypatch):
+    monkeypatch.setattr(job_search_module, "get_search_client", FailingSearchClient)
+    model = ToolCallThenAnswerModel()
+
+    result = _invoke_graph(monkeypatch, model)
+
+    messages = result["messages"]
+    kinds = [type(m).__name__ for m in messages]
+    assert kinds == ["HumanMessage", "AIMessage", "ToolMessage", "AIMessage"]
+
+    tool_message = messages[2]
+    assert tool_message.status == "error"
+    assert tool_message.content == SEARCH_FAILED_MESSAGE
+    assert model.calls == 2
     assert messages[-1].content == "Here are some AI Engineer jobs in Berlin."

@@ -2,7 +2,7 @@ from functools import lru_cache
 
 from langchain_openai import ChatOpenAI
 
-from tools.job_search import search_jobs
+from tools import TOOLS
 from utils.config import load_settings
 
 
@@ -14,4 +14,4 @@ def get_chat_model() -> ChatOpenAI:
 
 @lru_cache
 def get_tool_enabled_chat_model():
-    return get_chat_model().bind_tools([search_jobs])
+    return get_chat_model().bind_tools(TOOLS)

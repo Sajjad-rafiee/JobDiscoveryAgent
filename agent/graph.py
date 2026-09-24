@@ -3,7 +3,7 @@ from langgraph.prebuilt import ToolNode, tools_condition
 
 from agent.model import get_tool_enabled_chat_model
 from agent.state import AgentState
-from tools.job_search import search_jobs
+from tools import TOOLS
 
 
 def chat(state: AgentState) -> dict:
@@ -15,7 +15,7 @@ def chat(state: AgentState) -> dict:
 def build_graph():
     builder = StateGraph(AgentState)
     builder.add_node("chat", chat)
-    builder.add_node("tools", ToolNode([search_jobs]))
+    builder.add_node("tools", ToolNode(TOOLS))
     builder.add_edge(START, "chat")
     builder.add_conditional_edges("chat", tools_condition)
     builder.add_edge("tools", "chat")
