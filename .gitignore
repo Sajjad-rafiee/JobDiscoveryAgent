@@ -4,8 +4,3 @@ __pycache__/
 .pytest_cache/
 .env
 .DS_Store
-
-CLAUDE.md
-AGENTS.md
-GEMINI.md
-.claude/
