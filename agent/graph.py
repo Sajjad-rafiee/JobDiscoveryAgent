@@ -3,12 +3,14 @@ from langgraph.prebuilt import ToolNode, tools_condition
 
 from agent.model import get_tool_enabled_chat_model
 from agent.state import AgentState
+from prompts.agent import build_agent_prompt
 from tools import TOOLS
 
 
 def chat(state: AgentState) -> dict:
+    prompt = build_agent_prompt().invoke({"messages": state["messages"]})
     model = get_tool_enabled_chat_model()
-    response = model.invoke(state["messages"])
+    response = model.invoke(prompt.to_messages())
     return {"messages": [response]}
 
 

@@ -24,8 +24,10 @@ from pathlib import Path
 import pytest
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-RUNTIME_PACKAGES = {"agent", "api", "models", "tools", "utils"}
-RUNTIME_MODULES = ("agent.graph", "api.client", "tools.job_search", "utils.config")
+RUNTIME_PACKAGES = {"agent", "api", "models", "prompts", "tools", "utils"}
+RUNTIME_MODULES = (
+    "agent.graph", "api.client", "prompts.agent", "tools.job_search", "utils.config"
+)
 
 UV = os.environ.get("UV") or shutil.which("uv")
 
