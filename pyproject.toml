@@ -1,5 +1,5 @@
 [project]
-name = "career-agent"
+name = "job-discovery-agent"
 version = "0.1.0"
 description = "LangGraph-based job-search agent"
 requires-python = ">=3.12,<3.13"

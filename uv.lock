@@ -25,39 +25,6 @@ wheels = [
 ]
 
 [[package]]
-name = "career-agent"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "httpx" },
-    { name = "langchain-google-genai" },
-    { name = "langchain-openai" },
-    { name = "langgraph" },
-    { name = "openai" },
-    { name = "pydantic" },
-    { name = "python-dotenv" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "httpx", specifier = ">=0.28.1" },
-    { name = "langchain-google-genai", specifier = ">=4.4.0" },
-    { name = "langchain-openai", specifier = ">=1.6.4" },
-    { name = "langgraph" },
-    { name = "openai" },
-    { name = "pydantic", specifier = ">=2.13.5" },
-    { name = "python-dotenv" },
-]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest" }]
-
-[[package]]
 name = "certifi"
 version = "2026.7.22"
 source = { registry = "https://pypi.org/simple" }
@@ -352,6 +319,39 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/77/7a/1f0b8a35fbd079a4f1752c31a15dc99cf277f863747c459be0af39e900e5/jiter-0.17.0-graalpy312-graalpy250_312_native-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:3e05f5adbf68c4bd11e1610f394034d984152988e84be6f8314235ce6f2139e5", size = 303708, upload-time = "2026-09-12T15:14:11.445Z" },
     { url = "https://files.pythonhosted.org/packages/e1/8b/d76219ebdbcf3d4209d9d21a0810db4c8d0a6f88e3ee87d30bdea4e90d30/jiter-0.17.0-graalpy312-graalpy250_312_native-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d2c0bf24c72fd0491405dce5d40194f2070e9021ce648c1a1d46234b93d848ff", size = 307147, upload-time = "2026-09-12T15:14:12.897Z" },
 ]
+
+[[package]]
+name = "job-discovery-agent"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "httpx" },
+    { name = "langchain-google-genai" },
+    { name = "langchain-openai" },
+    { name = "langgraph" },
+    { name = "openai" },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "httpx", specifier = ">=0.28.1" },
+    { name = "langchain-google-genai", specifier = ">=4.4.0" },
+    { name = "langchain-openai", specifier = ">=1.6.4" },
+    { name = "langgraph" },
+    { name = "openai" },
+    { name = "pydantic", specifier = ">=2.13.5" },
+    { name = "python-dotenv" },
+]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest" }]
 
 [[package]]
 name = "jsonpatch"

@@ -2,7 +2,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 # Kept free of curly braces: ChatPromptTemplate would treat them as template variables.
 SYSTEM_PROMPT = """\
-You are CareerAgent, a professional job-search assistant. You help users find \
+You are JobDiscoveryAgent, a professional job-search assistant. You help users find \
 and understand job opportunities.
 
 Searching for jobs:

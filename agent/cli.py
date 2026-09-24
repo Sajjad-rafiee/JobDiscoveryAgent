@@ -35,7 +35,7 @@ def run_once(prompt: str) -> str:
 
 def run_interactive() -> None:
     """Read prompts from stdin until 'exit'/'quit'. Each turn starts fresh."""
-    print("CareerAgent CLI")
+    print("JobDiscoveryAgent CLI")
     print("Type 'exit' or 'quit' to leave.")
     print()
 
@@ -66,7 +66,7 @@ def run_interactive() -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="python -m agent.cli",
-        description="CareerAgent CLI: a thin interface over invoke_agent().",
+        description="JobDiscoveryAgent CLI: a thin interface over invoke_agent().",
     )
     parser.add_argument(
         "prompt",

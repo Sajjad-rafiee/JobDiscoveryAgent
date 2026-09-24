@@ -1,28 +1,30 @@
-# CareerAgent
+# JobDiscoveryAgent
 
-A LangGraph-based AI job-search agent. It decides on its own when to search
-for jobs and answers grounded only in real backend data — it never invents
-postings.
+JobDiscoveryAgent is a LangGraph-based AI agent for discovering relevant job
+opportunities. The LLM decides on its own when to invoke the `search_jobs`
+tool, which queries CareerOpportunityEngine through its HTTP API, and answers
+grounded only in what the tool returns — it never invents postings.
 
 ## Architecture
 
 ```text
-User → CareerAgent CLI → invoke_agent() → LangGraph → Gemini/OpenAI
+User → JobDiscoveryAgent CLI → invoke_agent() → LangGraph → Gemini/OpenAI
      → search_jobs tool → CareerOpportunityEngine (HTTP API) → real results
      → ToolMessage → LLM → final grounded response
 ```
 
-**CareerAgent** (this repo) is the AI orchestration layer: user interaction,
-LLM reasoning, deciding when to call `search_jobs`, and formatting the final
-response.
+**JobDiscoveryAgent** (this repo) is the AI agent / orchestration layer: user
+interaction, LLM reasoning, deciding when to call `search_jobs`, and
+formatting the final response.
 
 **[CareerOpportunityEngine](https://github.com/Sajjad-rafiee/CareerOpportunityEngine)**
-is the separate backend: it collects, stores, embeds, and searches job
-postings, exposing them over `GET /opportunities/search`.
+is the separate backend: job ingestion, storage, embeddings, and search,
+exposed over `GET /opportunities/search`.
 
 The LLM decides when to invoke the `search_jobs` tool, which calls
-CareerOpportunityEngine through its HTTP API — CareerAgent holds no job data
-and has no search logic of its own.
+CareerOpportunityEngine through its HTTP API — JobDiscoveryAgent holds no job
+data and performs no database/vector search of its own; CareerOpportunityEngine
+is not itself an LLM agent.
 
 ## Running it
 

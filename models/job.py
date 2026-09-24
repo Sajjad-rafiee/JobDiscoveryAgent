@@ -3,7 +3,7 @@
 The backend's `GET /opportunities/search` returns `list[OpportunitySearchResult]`
 (`app/schemas/opportunity.py` in CareerOpportunityEngine); `JobPosting` follows
 that schema field for field. Unknown extra fields are ignored so the backend can
-add fields without breaking CareerAgent.
+add fields without breaking JobDiscoveryAgent.
 """
 
 from datetime import date, datetime
