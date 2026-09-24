@@ -8,7 +8,7 @@ from agent.runtime import invoke_agent
 EXIT_COMMANDS = {"exit", "quit"}
 
 
-def _extract_text(message) -> str:
+def extract_text(message) -> str:
     """Return the final assistant message as plain text.
 
     `message.content` is a plain string for OpenAI and a list of content
@@ -30,7 +30,7 @@ def _extract_text(message) -> str:
 def run_once(prompt: str) -> str:
     """Run one fresh conversation turn and return the assistant's reply text."""
     result = invoke_agent([{"role": "user", "content": prompt}])
-    return _extract_text(result["messages"][-1])
+    return extract_text(result["messages"][-1])
 
 
 def run_interactive() -> None:
