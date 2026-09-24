@@ -8,6 +8,7 @@ dependencies = [
     "langchain-openai>=1.6.4",
     "langgraph",
     "openai",
+    "pydantic>=2.13.5",
     "python-dotenv",
 ]
 
@@ -22,3 +23,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["agent", "api", "models", "prompts", "tools", "utils"]
+
+[tool.pytest.ini_options]
+addopts = "-m 'not integration'"
+markers = [
+    "integration: needs a running CareerOpportunityEngine backend",
+]

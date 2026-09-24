@@ -54,20 +54,20 @@ def test_http_mode_reads_required_values(monkeypatch):
     _set_openai_env(monkeypatch)
     monkeypatch.setenv("CAREER_API_MODE", "http")
     monkeypatch.setenv("CAREER_API_BASE_URL", "http://test-api")
-    monkeypatch.setenv("CAREER_API_SEARCH_PATH", "/test-search")
+    monkeypatch.setenv("CAREER_API_SEARCH_PATH", "/opportunities/search")
 
     settings = load_settings()
 
     assert settings.career_api.mode == "http"
     assert settings.career_api.base_url == "http://test-api"
-    assert settings.career_api.search_path == "/test-search"
+    assert settings.career_api.search_path == "/opportunities/search"
 
 
 @pytest.mark.parametrize("missing", ["CAREER_API_BASE_URL", "CAREER_API_SEARCH_PATH"])
 def test_http_mode_requires_base_url_and_search_path(monkeypatch, missing):
     monkeypatch.setenv("CAREER_API_MODE", "http")
     monkeypatch.setenv("CAREER_API_BASE_URL", "http://test-api")
-    monkeypatch.setenv("CAREER_API_SEARCH_PATH", "/test-search")
+    monkeypatch.setenv("CAREER_API_SEARCH_PATH", "/opportunities/search")
     monkeypatch.delenv(missing)
 
     with pytest.raises(ConfigError, match=missing):
@@ -77,7 +77,7 @@ def test_http_mode_requires_base_url_and_search_path(monkeypatch, missing):
 def test_http_mode_rejects_empty_required_value(monkeypatch):
     monkeypatch.setenv("CAREER_API_MODE", "http")
     monkeypatch.setenv("CAREER_API_BASE_URL", "")
-    monkeypatch.setenv("CAREER_API_SEARCH_PATH", "/test-search")
+    monkeypatch.setenv("CAREER_API_SEARCH_PATH", "/opportunities/search")
 
     with pytest.raises(ConfigError, match="CAREER_API_BASE_URL"):
         load_career_api_settings()

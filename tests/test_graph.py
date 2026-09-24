@@ -3,7 +3,9 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, Tool
 from agent import graph as graph_module
 from agent.graph import graph
 from api.client import CareerAPIError
+from models.job import JobSearchResult
 from prompts.agent import SYSTEM_PROMPT
+from tests.backend_samples import search_result_json
 from tools import job_search as job_search_module
 from tools.job_search import SEARCH_FAILED_MESSAGE
 
@@ -45,8 +47,28 @@ class RecordingModel:
 
 
 class FailingSearchClient:
-    def search_jobs(self, query, location=None):
+    def search_jobs(self, query):
         raise CareerAPIError("Career API request failed with status 503")
+
+    def close(self):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc_info):
+        self.close()
+
+
+class BackendShapedSearchClient:
+    """Returns data in CareerOpportunityEngine's response schema, offline."""
+
+    def __init__(self):
+        self.queries = []
+
+    def search_jobs(self, query):
+        self.queries.append(query)
+        return JobSearchResult.from_api_response([search_result_json(title="AI Engineer")])
 
     def close(self):
         pass
@@ -148,3 +170,26 @@ def test_career_api_failure_becomes_tool_error_and_graph_continues(monkeypatch):
     assert tool_message.content == SEARCH_FAILED_MESSAGE
     assert model.calls == 2
     assert messages[-1].content == "Here are some AI Engineer jobs in Berlin."
+
+
+def test_tool_loop_with_backend_shaped_results(monkeypatch):
+    search_client = BackendShapedSearchClient()
+    monkeypatch.setattr(job_search_module, "get_search_client", lambda: search_client)
+    model = ToolCallThenAnswerModel()
+
+    result = _invoke_graph(monkeypatch, model)
+
+    messages = result["messages"]
+    assert [type(m).__name__ for m in messages] == [
+        "HumanMessage",
+        "AIMessage",
+        "ToolMessage",
+        "AIMessage",
+    ]
+    assert search_client.queries == ["AI Engineer Berlin"]
+    tool_message = messages[2]
+    assert tool_message.status == "success"
+    assert "AI Engineer — N26" in tool_message.content
+    assert "https://boards.example.com/jobs/1" in tool_message.content
+    assert "(demo data)" not in tool_message.content
+    assert model.received[1][3] == tool_message

@@ -33,6 +33,7 @@ dependencies = [
     { name = "langchain-openai" },
     { name = "langgraph" },
     { name = "openai" },
+    { name = "pydantic" },
     { name = "python-dotenv" },
 ]
 
@@ -47,6 +48,7 @@ requires-dist = [
     { name = "langchain-openai", specifier = ">=1.6.4" },
     { name = "langgraph" },
     { name = "openai" },
+    { name = "pydantic", specifier = ">=2.13.5" },
     { name = "python-dotenv" },
 ]
 
