@@ -1,15 +1,21 @@
 from functools import lru_cache
 
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 
 from tools import TOOLS
-from utils.config import load_settings
+from utils.config import Settings, load_settings
+
+
+def _build_chat_model(settings: Settings) -> ChatGoogleGenerativeAI | ChatOpenAI:
+    if settings.model_provider == "gemini":
+        return ChatGoogleGenerativeAI(model=settings.gemini_model, api_key=settings.gemini_api_key)
+    return ChatOpenAI(model=settings.openai_model, api_key=settings.openai_api_key)
 
 
 @lru_cache
-def get_chat_model() -> ChatOpenAI:
-    settings = load_settings()
-    return ChatOpenAI(model=settings.openai_model, api_key=settings.openai_api_key)
+def get_chat_model() -> ChatGoogleGenerativeAI | ChatOpenAI:
+    return _build_chat_model(load_settings())
 
 
 @lru_cache

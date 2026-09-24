@@ -5,6 +5,7 @@ description = "LangGraph-based job-search agent"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "httpx>=0.28.1",
+    "langchain-google-genai>=4.4.0",
     "langchain-openai>=1.6.4",
     "langgraph",
     "openai",
