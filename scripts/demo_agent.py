@@ -16,6 +16,7 @@ from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 
 from agent.cli import extract_text
 from agent.runtime import invoke_agent
+from utils.telemetry import init_telemetry
 
 _TITLE_LINE = re.compile(r"^\d+\.\s*(.+)$", re.MULTILINE)
 _COUNT_LINE = re.compile(r"^Found (\d+) ")
@@ -85,6 +86,8 @@ def run_demo(prompt: str) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    init_telemetry()
+
     argv = sys.argv[1:] if argv is None else argv
     if not argv:
         print('Usage: uv run python scripts/demo_agent.py "<prompt>"', file=sys.stderr)

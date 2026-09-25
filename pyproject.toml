@@ -9,6 +9,10 @@ dependencies = [
     "langchain-openai>=1.6.4",
     "langgraph",
     "openai",
+    "opentelemetry-api>=1.44.0",
+    "opentelemetry-exporter-otlp-proto-http>=1.44.0",
+    "opentelemetry-instrumentation-httpx>=0.65b0",
+    "opentelemetry-sdk>=1.44.0",
     "pydantic>=2.13.5",
     "python-dotenv",
 ]

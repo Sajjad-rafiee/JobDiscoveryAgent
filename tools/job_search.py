@@ -7,6 +7,7 @@ from langchain_core.tools import ToolException, tool
 from api.client import CareerAPIError, SearchClient, create_search_client
 from models.job import JobPosting, JobSearchResult
 from utils.config import load_career_api_settings
+from utils.telemetry import get_tracer
 
 logger = logging.getLogger(__name__)
 
@@ -96,17 +97,27 @@ def search_jobs(query: str, location: str | None = None) -> str:
     relevance; a location influences the ranking but is not a strict filter.
     """
     search_text = build_search_query(query, location)
-    if not search_text:
-        raise ToolException(EMPTY_QUERY_MESSAGE)
 
-    try:
-        with get_search_client() as client:
-            result = client.search_jobs(search_text)
-    except CareerAPIError as exc:
-        # The details may contain backend URLs, so they are logged rather than
-        # shown to the model, which only learns that the search failed.
-        logger.warning("Career API job search failed: %s", exc)
-        raise ToolException(SEARCH_FAILED_MESSAGE) from exc
+    with get_tracer().start_as_current_span("execute_tool") as span:
+        span.set_attribute("gen_ai.operation.name", "execute_tool")
+        span.set_attribute("tool.name", "search_jobs")
+
+        if not search_text:
+            span.set_attribute("tool.call.status", "error")
+            raise ToolException(EMPTY_QUERY_MESSAGE)
+
+        try:
+            with get_search_client() as client:
+                result = client.search_jobs(search_text)
+        except CareerAPIError as exc:
+            span.set_attribute("tool.call.status", "error")
+            # The details may contain backend URLs, so they are logged rather
+            # than shown to the model, which only learns that the search failed.
+            logger.warning("Career API job search failed: %s", exc)
+            raise ToolException(SEARCH_FAILED_MESSAGE) from exc
+
+        span.set_attribute("tool.call.status", "success")
+        span.set_attribute("result.count", len(result.results))
 
     return _format_results(result, search_text, location)
 

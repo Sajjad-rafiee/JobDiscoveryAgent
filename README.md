@@ -128,6 +128,25 @@ The agent has been verified end-to-end against the real CareerOpportunityEngine
 backend. See [the captured demo run](docs/demo/agent-run.md) for an example
 using real backend data.
 
+## Observability
+
+JobDiscoveryAgent uses OpenTelemetry for distributed tracing across the agent
+and CareerOpportunityEngine.
+
+A single trace can follow:
+
+```text
+User request
+→ Agent
+→ tool execution
+→ HTTP request
+→ CareerOpportunityEngine
+→ search
+```
+
+Off by default (`OTEL_TRACES_EXPORTER=none`); local traces can be viewed in
+Jaeger. See [`docs/observability.md`](docs/observability.md).
+
 ## Project Status
 
 JobDiscoveryAgent currently supports:
@@ -139,6 +158,7 @@ JobDiscoveryAgent currently supports:
 - CLI interaction
 - unit and integration tests
 - real end-to-end verification
+- distributed tracing (OpenTelemetry + Jaeger)
 
 This is a portfolio/demo project, not a production service.
 

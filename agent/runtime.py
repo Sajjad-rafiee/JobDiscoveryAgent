@@ -4,6 +4,7 @@ from typing import Any
 from langchain_core.messages import MessageLikeRepresentation
 
 from agent.graph import graph
+from utils.telemetry import get_tracer
 
 
 def invoke_agent(messages: Sequence[MessageLikeRepresentation]) -> dict[str, Any]:
@@ -16,4 +17,7 @@ def invoke_agent(messages: Sequence[MessageLikeRepresentation]) -> dict[str, Any
     """
     if isinstance(messages, str):
         raise TypeError("messages must be a sequence of messages, not a string")
-    return graph.invoke({"messages": list(messages)})
+
+    with get_tracer().start_as_current_span("invoke_agent") as span:
+        span.set_attribute("gen_ai.operation.name", "invoke_agent")
+        return graph.invoke({"messages": list(messages)})

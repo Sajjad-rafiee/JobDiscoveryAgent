@@ -1,0 +1,26 @@
+# Local-only observability stack: Jaeger all-in-one.
+#
+# Kept separate from CareerOpportunityEngine's docker-compose.yml so neither
+# repo's application stack depends on this one. Run with:
+#
+#   docker compose -f docker-compose.observability.yml up -d
+#
+# Then point both services at it via OTEL_TRACES_EXPORTER=otlp and
+# OTEL_EXPORTER_OTLP_ENDPOINT. From a process on the host (e.g.
+# JobDiscoveryAgent run with `uv run`), that's http://localhost:4318. From
+# inside CareerOpportunityEngine's own docker-compose (a separate Compose
+# project/network), the container can't reach "localhost" on the host — use
+# http://host.docker.internal:4318 instead. That hostname is provided by
+# Docker Desktop (macOS/Windows) automatically; on Linux, CareerOpportunityEngine's
+# docker-compose.yml adds the equivalent `host-gateway` mapping for its `app`
+# service (see its OTEL_EXPORTER_OTLP_ENDPOINT default).
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: job-discovery-agent-jaeger
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686" # Jaeger UI
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP

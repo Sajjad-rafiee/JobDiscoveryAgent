@@ -4,6 +4,7 @@ import argparse
 import sys
 
 from agent.runtime import invoke_agent
+from utils.telemetry import init_telemetry
 
 EXIT_COMMANDS = {"exit", "quit"}
 
@@ -64,6 +65,8 @@ def run_interactive() -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    init_telemetry()
+
     parser = argparse.ArgumentParser(
         prog="python -m agent.cli",
         description="JobDiscoveryAgent CLI: a thin interface over invoke_agent().",
