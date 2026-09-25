@@ -98,13 +98,18 @@ uv run python -m agent.cli
 uv run pytest
 ```
 
-Runs the offline test suite — no network access or API keys required.
+Runs the offline test suite without network access or external API calls.
 
 ```bash
 uv run pytest -m integration
 ```
 
 Runs integration tests against a running CareerOpportunityEngine backend.
+
+The current test suite includes:
+
+- 148 offline/unit tests for JobDiscoveryAgent
+- 4 integration tests for the CareerOpportunityEngine integration
 
 ## Live Agent Demo
 
@@ -126,26 +131,80 @@ User
 
 The agent has been verified end-to-end against the real CareerOpportunityEngine
 backend. See [the captured demo run](docs/demo/agent-run.md) for an example
-using real backend data.
+using real backend data. The live demo can also be inspected through the
+distributed trace when the local Jaeger stack is enabled (see Observability
+below).
 
 ## Observability
 
 JobDiscoveryAgent uses OpenTelemetry for distributed tracing across the agent
-and CareerOpportunityEngine.
+and CareerOpportunityEngine. Off by default (`OTEL_TRACES_EXPORTER=none`);
+local traces can be viewed in Jaeger.
 
 A single trace can follow:
 
 ```text
 User request
-→ Agent
-→ tool execution
-→ HTTP request
+→ JobDiscoveryAgent
+→ LLM
+→ search_jobs
+→ HTTPX
 → CareerOpportunityEngine
-→ search
+→ backend search
+→ ToolMessage
+→ final LLM response
 ```
 
-Off by default (`OTEL_TRACES_EXPORTER=none`); local traces can be viewed in
-Jaeger. See [`docs/observability.md`](docs/observability.md).
+The HTTP boundary propagates W3C Trace Context, allowing the Agent and
+backend spans to appear in the same distributed trace:
+
+```text
+invoke_agent
+├── chat
+├── execute_tool: search_jobs
+│   └── HTTP GET /opportunities/search
+│       └── CareerOpportunityEngine
+│           └── opportunities.search
+└── chat
+```
+
+(Conceptual hierarchy — exact span names come from each library's own
+instrumentation and may vary slightly.)
+
+### Failure tracing
+
+The distributed trace was also verified against a controlled backend
+failure. A real HTTP 503 propagated through the tool and backend layers and
+remained visible in the same distributed trace. This makes it possible to
+distinguish failures in the agent/tool layer from failures at the
+HTTP/backend layer — it does not mean the agent is failure-proof.
+
+### Two services, one trace
+
+```text
+JobDiscoveryAgent
+        │
+        │ HTTP + W3C Trace Context
+        ▼
+CareerOpportunityEngine
+        │
+        ▼
+      Jaeger
+```
+
+The Agent and backend remain separate repositories and services.
+OpenTelemetry propagates the trace context across the HTTP boundary so a
+request can be followed as one distributed trace — they are not one
+application package.
+
+Telemetry is intentionally limited to operational metadata such as service,
+model, tool, result count, status, and timing. Full prompts, job
+descriptions, API keys, authorization headers, and full payloads are not
+recorded as trace attributes.
+
+For the full observability setup, trace structure, security considerations,
+and local Jaeger instructions, see
+[`docs/observability.md`](docs/observability.md).
 
 ## Project Status
 
@@ -158,7 +217,9 @@ JobDiscoveryAgent currently supports:
 - CLI interaction
 - unit and integration tests
 - real end-to-end verification
-- distributed tracing (OpenTelemetry + Jaeger)
+- OpenTelemetry-based distributed tracing
+- Jaeger-based local trace visualization
+- W3C trace context propagation across the Agent/backend boundary
 
 This is a portfolio/demo project, not a production service.
 
