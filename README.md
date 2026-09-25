@@ -173,6 +173,15 @@ invoke_agent
 (Conceptual hierarchy — exact span names come from each library's own
 instrumentation and may vary slightly.)
 
+![A real distributed trace in Jaeger spanning job-discovery-agent and career-opportunity-engine](docs/assets/distributed-trace-success.png)
+
+A real distributed trace in Jaeger: one trace ID, two services
+(`job-discovery-agent` and `career-opportunity-engine`), spanning
+`invoke_agent` down through the HTTP call into the backend's own
+`opportunities.search` span. See
+[`docs/observability.md`](docs/observability.md) for the equivalent trace
+under a controlled backend failure.
+
 ### Failure tracing
 
 The distributed trace was also verified against a controlled backend

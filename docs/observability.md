@@ -228,6 +228,15 @@ HTTPX `GET` span, and both backend HTTP spans are all marked
 `error=true`/`http.status_code=503`, and the tool correctly turns that into
 `tool.call.status=error` rather than fabricating a result.
 
+![A distributed trace in Jaeger showing a controlled backend failure propagating through both services](assets/distributed-trace-failure.png)
+
+This is the controlled backend failure scenario (`OTEL_DEMO_FAULT_MODE=error`):
+the red error markers appear on `execute_tool`, the HTTPX client span, and
+both `career-opportunity-engine` spans, but the trace itself is unbroken —
+both services remain visible in the same distributed trace, which is what
+makes it possible to tell a real backend failure apart from an agent-side
+one instead of just seeing two disconnected symptoms.
+
 Every attribute recorded on every span in both traces was inspected directly
 via the Jaeger API: only operation names, provider/model names, tool
 name/status, result counts, and standard HTTP metadata (method, URL, status
