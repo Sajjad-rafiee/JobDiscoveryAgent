@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+from langchain_core.runnables import Runnable
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 
@@ -19,7 +20,7 @@ def get_chat_model() -> ChatGoogleGenerativeAI | ChatOpenAI:
 
 
 @lru_cache
-def get_tool_enabled_chat_model():
+def get_tool_enabled_chat_model() -> Runnable:
     return get_chat_model().bind_tools(TOOLS)
 
 

@@ -1,9 +1,9 @@
+from langchain_core.messages import AIMessage
 from opentelemetry import trace
 from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
-from langchain_core.messages import AIMessage
 
 import utils.telemetry as telemetry_module
 from agent import graph as graph_module

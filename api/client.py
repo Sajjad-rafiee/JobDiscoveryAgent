@@ -53,7 +53,7 @@ class CareerSearchClient:
         self._client = client or httpx.Client(base_url=base_url, timeout=timeout)
 
     def search_jobs(self, query: str) -> JobSearchResult:
-        params = {"q": query, "limit": self._limit}
+        params: dict[str, str | int] = {"q": query, "limit": self._limit}
 
         try:
             response = self._client.get(self._search_path, params=params)

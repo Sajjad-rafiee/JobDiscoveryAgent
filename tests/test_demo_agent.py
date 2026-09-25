@@ -6,7 +6,9 @@ from scripts import demo_agent
 def _tool_call_message(query="AI Engineer", location="Berlin"):
     return AIMessage(
         content="",
-        tool_calls=[{"name": "search_jobs", "args": {"query": query, "location": location}, "id": "call_1"}],
+        tool_calls=[
+            {"name": "search_jobs", "args": {"query": query, "location": location}, "id": "call_1"}
+        ],
     )
 
 

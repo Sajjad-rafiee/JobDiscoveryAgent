@@ -100,6 +100,11 @@ def load_settings() -> Settings:
     load_dotenv()
     provider = _model_provider()
 
+    gemini_api_key: str | None
+    gemini_model: str | None
+    openai_api_key: str | None
+    openai_model: str | None
+
     if provider == "gemini":
         gemini_api_key = _require("GEMINI_API_KEY")
         gemini_model = _require("GEMINI_MODEL")

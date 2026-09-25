@@ -1,4 +1,5 @@
 from langgraph.graph import START, StateGraph
+from langgraph.graph.state import CompiledStateGraph
 from langgraph.prebuilt import ToolNode, tools_condition
 
 from agent.model import get_model_info, get_tool_enabled_chat_model
@@ -26,7 +27,7 @@ def chat(state: AgentState) -> dict:
     return {"messages": [response]}
 
 
-def build_graph():
+def build_graph() -> CompiledStateGraph:
     builder = StateGraph(AgentState)
     builder.add_node("chat", chat)
     builder.add_node("tools", ToolNode(TOOLS))

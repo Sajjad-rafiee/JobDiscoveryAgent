@@ -3,13 +3,15 @@
 import argparse
 import sys
 
+from langchain_core.messages import BaseMessage
+
 from agent.runtime import invoke_agent
 from utils.telemetry import init_telemetry
 
 EXIT_COMMANDS = {"exit", "quit"}
 
 
-def extract_text(message) -> str:
+def extract_text(message: BaseMessage) -> str:
     """Return the final assistant message as plain text.
 
     `message.content` is a plain string for OpenAI and a list of content

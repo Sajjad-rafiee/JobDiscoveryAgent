@@ -1,5 +1,7 @@
 # JobDiscoveryAgent
 
+![CI](https://github.com/Sajjad-rafiee/JobDiscoveryAgent/actions/workflows/ci.yml/badge.svg)
+
 JobDiscoveryAgent is a LangGraph-based AI agent for discovering relevant job
 opportunities. The LLM decides when to invoke the `search_jobs` tool, which
 queries [CareerOpportunityEngine](https://github.com/Sajjad-rafiee/CareerOpportunityEngine)
